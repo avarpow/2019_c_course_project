@@ -8,38 +8,16 @@
 using namespace std;
 void load_image();
 void game_init();
-bool in_range_white_change_skin(MOUSEMSG m_mouse);
-bool in_range_black_change_skin(MOUSEMSG m_mouse);
-bool in_range_reset(MOUSEMSG m_mouse);
-bool in_range_change_skin_1(MOUSEMSG m_mouse);
-bool in_range_change_skin_2(MOUSEMSG m_mouse);
-bool in_range_change_skin_3(MOUSEMSG m_mouse);
-bool in_range_change_skin_4(MOUSEMSG m_mouse);
-bool in_range_change_skin_5(MOUSEMSG m_mouse);
-bool in_range_change_skin_6(MOUSEMSG m_mouse);
 bool in_range_set_chess(MOUSEMSG m_mouse);
-bool in_range_return(MOUSEMSG m_mouse);
-bool in_range_record_end(MOUSEMSG m_mouse);
-bool in_range_replay(MOUSEMSG m_mouse);
 bool in_range_withdraw(MOUSEMSG m_mouse);
-bool in_range_record(MOUSEMSG m_mouse);
 void set_chess(MOUSEMSG m_mouse,int &play_side_now);
 void withdraw();
-void wait_mouse_click();
 void draw_chess_board(int chess_board[][15]);
 int one_side_win(int which_side);
 int is_five(int row,int column,int which_side);
-int is_one_side_win(int which_side);
 void win(int which_side);
 void save_game_record();
-void show_skin();
 void play();
-void game_reset();
-void game_replay();
-int chose_skin();
-void white_skin_change();
-void black_skin_change();
-void after_win_action();
 //棋盘范围
 #define CHESS_UP 98
 #define CHESS_DOWN 772
