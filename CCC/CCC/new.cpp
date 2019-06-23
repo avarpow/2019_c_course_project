@@ -57,7 +57,12 @@ void play();
 #define BLACK_CHANGE_SKIN_UP 367
 #define BLACK_CHANGE_SKIN_DOWN 403
 #define BLACK_CHANGE_SKIN_LEFT 969
-#define BLACK_CHANGE_SKIN_RIGHT 1062
+#define BLACK_CHANGE_SKIN_RIGHT 1062 
+//重来按钮
+#define RESET_UP 36
+#define RESET_DOWN 73
+#define RESET_LEFT 683
+#define RESET_RIGHT 778 
 //换皮肤1按钮
 #define CHANGE_SKIN_1_UP (pic_y+47)
 #define CHANGE_SKIN_1_DOWN (pic_y+47+chess_icon_size)
@@ -88,6 +93,7 @@ void play();
 #define CHANGE_SKIN_6_DOWN (pic_y+182+chess_icon_size)
 #define CHANGE_SKIN_6_LEFT (pic_x+343)
 #define CHANGE_SKIN_6_RIGHT (pic_x+343+chess_icon_size)
+
 enum which_side{
     WHITE_SIDE,BLACK_SIDE//分别是白方下棋和黑方下棋
 };
@@ -99,6 +105,7 @@ struct point {
 	int y = 0;
 };
 //棋盘上黑棋为1，白棋为1-，无棋子是0
+
 int chess_board[15][15]={0};
 int play_side_now;//描述当前是白方还是黑方下棋
 int white_using_skin_num;
@@ -107,8 +114,9 @@ int white_money;
 int black_money;
 int now_page=GAME_PAGE;
 int chess_size=46;
-int chess_icon_size=120;
 int pic_x=300,pic_y=200;
+int chess_icon_size=120;
+
 IMAGE pic_chess_board,pic_skin_change,skin[6],skin_mask[6],skin_icon[6],skin_mask_icon[6];
 IMAGE white_win,black_win,record_success,numbers[10];
 vector <struct point> game_record;
@@ -172,6 +180,13 @@ bool in_range_white_change_skin(MOUSEMSG m_mouse){
 bool in_range_black_change_skin(MOUSEMSG m_mouse){
     //判断是否在黑棋换皮肤范围之内
     if(m_mouse.x>=BLACK_CHANGE_SKIN_LEFT && m_mouse.x<=BLACK_CHANGE_SKIN_RIGHT && m_mouse.y>=BLACK_CHANGE_SKIN_UP && m_mouse.y<=BLACK_CHANGE_SKIN_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_reset(MOUSEMSG m_mouse){
+    //判断是否在重来按钮范围之内
+    if(m_mouse.x>=RESET_LEFT && m_mouse.x<=RESET_RIGHT && m_mouse.y>=RESET_UP && m_mouse.y<=RESET_DOWN){
         return true;
     }
     else return false;
@@ -549,6 +564,9 @@ void play(){
                 }
                 else if(in_range_black_change_skin(m_mouse)){
                     black_skin_change();
+                }
+                else if(in_range_reset(m_mouse)){
+                    game_reset();
                 }
                 //这里以后加更多按钮的功能
             }
