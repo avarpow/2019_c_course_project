@@ -1,4 +1,6 @@
 #include<graphics.h>
+#include <stdio.h>
+#include <windows.h>
 #include<conio.h>
 #include<stdio.h>
 #include<iostream>
@@ -26,23 +28,31 @@ void play();
 #define WITHDRAW_DOWN 73
 #define WITHDRAW_LEFT 331
 #define WITHDRAW_RIGHT 425
+//中途记录对局按钮范围
+#define RECORD_UP 35
+#define RECORD_DOWN 73
+#define RECORD_LEFT 509
+#define RECORD_RIGHT 601
 //返回菜单按钮范围
-#define RETURN_UP 272
-#define RETURN_DOWN 412
-#define RETURN_LEFT 269
-#define RETURN_RIGHT 400
-//记录对局按钮范围
-#define RECORD_END_UP 272
-#define RECORD_END_DOWN 412
-#define RECORD_END_LEFT 439
-#define RECORD_END_RIGHT 570
+#define RETURN_UP 400
+#define RETURN_DOWN 584
+#define RETURN_LEFT 285
+#define RETURN_RIGHT 441
+//结束时记录对局按钮范围
+#define RECORD_END_UP 400
+#define RECORD_END_DOWN 584
+#define RECORD_END_LEFT 475
+#define RECORD_END_RIGHT 634
 //精彩重播按钮范围
-#define REPLAY_UP 272
-#define REPLAY_DOWN 412
-#define REPLAY_LEFT 609
-#define REPLAY_RIGHT 740
+#define REPLAY_UP 400
+#define REPLAY_DOWN 584
+#define REPLAY_LEFT 674
+#define REPLAY_RIGHT 821
 enum which_side{
     WHITE_SIDE,BLACK_SIDE//分别是白方下棋和黑方下棋
+};
+enum which_page{
+    GAME_PAGE,SKIN_PAGE,WIN_PAGE
 };
 struct point {
 	int x = 0;
@@ -55,8 +65,9 @@ int white_using_skin_num;
 int black_using_skin_num;
 int white_money;
 int black_money;
+int now_page=GAME_PAGE;
 IMAGE pic_chess_board,white_skin[2],white_skin_mask[2],black_skin[2],black_skin_mask[2];
-IMAGE white_win,black_win;
+IMAGE white_win,black_win,record_success;
 vector <struct point> game_record;
 MOUSEMSG m_mouse;
 
@@ -73,6 +84,7 @@ void load_image(){
     loadimage(&black_skin[0],L"kunkun.jpg",46,46);
     loadimage(&white_win,L"whitewin.jpg");
     loadimage(&black_win,L"blackwin.jpg");
+    loadimage(&record_success,L"record_success.jpg");
 }
 void game_init(){
     //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
@@ -121,6 +133,12 @@ bool in_range_withdraw(MOUSEMSG m_mouse){
     }
     else return false;
 }
+bool in_range_record(MOUSEMSG m_mouse){
+    if(m_mouse.x>=RECORD_LEFT && m_mouse.x<=RECORD_RIGHT && m_mouse.y>=RECORD_UP && m_mouse.y<=RECORD_DOWN){
+        return true;
+    }
+    else return false;
+}
 void set_chess(MOUSEMSG m_mouse,int &play_side_now){
     //根据鼠标位置和现在是哪一方在下棋来落子
     point temp;
@@ -156,7 +174,17 @@ void withdraw(){
         draw_chess_board(chess_board);
     }
 }
-
+void wait_mouse_click(){
+    int flag=1;
+    while(flag){
+        m_mouse = GetMouseMsg();
+        switch (m_mouse.uMsg) {	
+            case WM_LBUTTONDOWN:{
+                flag=0;
+            }
+        }
+    }
+}
 void draw_chess_board(int chess_board[][15]){
     //画棋盘，字面意思
 	setbkcolor(RGB(245, 211, 155));
@@ -226,9 +254,37 @@ void game_reset(){
     draw_chess_board(chess_board);
 }
 void game_replay(){
-
+    memset(chess_board,0,sizeof(chess_board));
+    play_side_now=BLACK_SIDE;
+    for(int i=0;i<game_record.size();i++){
+        
+        switch(play_side_now){
+            case WHITE_SIDE:
+            {
+                chess_board[game_record[i].x][game_record[i].y] = -1;    
+                play_side_now=BLACK_SIDE;
+                break;
+            }
+            case BLACK_SIDE:
+            {
+                chess_board[game_record[i].x][game_record[i].y]=1;
+                play_side_now=WHITE_SIDE;
+                break;
+            }
+        }
+        draw_chess_board(chess_board);
+        Sleep(500);
+    }
+    wait_mouse_click();
+    if(is_one_side_win(WHITE_SIDE)){
+        win(WHITE_SIDE);
+    }
+    else if(is_one_side_win(BLACK_SIDE)){
+        win(BLACK_SIDE);
+    }
 }
 void after_win_action(){
+    now_page=WIN_PAGE;
     int flag=1;
     while(flag){
         m_mouse = GetMouseMsg();
@@ -240,7 +296,7 @@ void after_win_action(){
                 else if(in_range_record_end(m_mouse)){
                     save_game_record();
                         }
-                else if(in_range_replay()){
+                else if(in_range_replay(m_mouse)){
                     flag=0;
                     game_replay();
                 }
@@ -273,6 +329,19 @@ void save_game_record(){
         }
     }
     fclose(fp);
+    putimage(500, 350, &record_success);
+    wait_mouse_click();
+    if(now_page== GAME_PAGE){
+    draw_chess_board(chess_board);
+    }
+    else if(now_page == WIN_PAGE){
+        if(is_one_side_win(WHITE_SIDE)){
+            putimage(0, 0, &white_win);
+        }
+        else if(is_one_side_win(BLACK_SIDE)){
+            putimage(0, 0, &black_win);
+        }
+    }
 }
 void play(){
     while(1){
@@ -289,7 +358,9 @@ void play(){
                     }
                 }
                 else if(in_range_withdraw(m_mouse)){
-                    //withdraw();
+                    withdraw();
+                }
+                else if(in_range_record(m_mouse)){
                     save_game_record();
                 }
                 //这里以后加更多按钮的功能
