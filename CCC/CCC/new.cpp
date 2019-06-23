@@ -58,6 +58,36 @@ void play();
 #define BLACK_CHANGE_SKIN_DOWN 403
 #define BLACK_CHANGE_SKIN_LEFT 969
 #define BLACK_CHANGE_SKIN_RIGHT 1062
+//换皮肤1按钮
+#define CHANGE_SKIN_1_UP (pic_y+47)
+#define CHANGE_SKIN_1_DOWN (pic_y+47+chess_icon_size)
+#define CHANGE_SKIN_1_LEFT (pic_x+38)
+#define CHANGE_SKIN_1_RIGHT (pic_x+38+chess_icon_size)
+//换皮肤2按钮
+#define CHANGE_SKIN_2_UP (pic_y+47)
+#define CHANGE_SKIN_2_DOWN (pic_y+47+chess_icon_size)
+#define CHANGE_SKIN_2_LEFT (pic_x+189)
+#define CHANGE_SKIN_2_RIGHT (pic_x+189+chess_icon_size)
+//换皮肤3按钮
+#define CHANGE_SKIN_3_UP (pic_y+47)
+#define CHANGE_SKIN_3_DOWN (pic_y+47+chess_icon_size)
+#define CHANGE_SKIN_3_LEFT (pic_x+337)
+#define CHANGE_SKIN_3_RIGHT (pic_x+337+chess_icon_size)
+//换皮肤4按钮
+#define CHANGE_SKIN_4_UP (pic_y+182)
+#define CHANGE_SKIN_4_DOWN (pic_y+182+chess_icon_size)
+#define CHANGE_SKIN_4_LEFT (pic_x+38)
+#define CHANGE_SKIN_4_RIGHT (pic_x+38+chess_icon_size)
+//换皮肤5按钮
+#define CHANGE_SKIN_5_UP (pic_y+182)
+#define CHANGE_SKIN_5_DOWN (pic_y+182+chess_icon_size)
+#define CHANGE_SKIN_5_LEFT (pic_x+187)
+#define CHANGE_SKIN_5_RIGHT (pic_x+187+chess_icon_size)
+//换皮肤6按钮
+#define CHANGE_SKIN_6_UP (pic_y+182)
+#define CHANGE_SKIN_6_DOWN (pic_y+182+chess_icon_size)
+#define CHANGE_SKIN_6_LEFT (pic_x+343)
+#define CHANGE_SKIN_6_RIGHT (pic_x+343+chess_icon_size)
 enum which_side{
     WHITE_SIDE,BLACK_SIDE//分别是白方下棋和黑方下棋
 };
@@ -76,8 +106,11 @@ int black_using_skin_num;
 int white_money;
 int black_money;
 int now_page=GAME_PAGE;
-IMAGE pic_chess_board,skin[6],skin_mask[6],skin_icon[6],skin_mask_icon[6];
-IMAGE white_win,black_win,record_success，numbers[10];
+int chess_size=46;
+int chess_icon_size=120;
+int pic_x=300,pic_y=200;
+IMAGE pic_chess_board,pic_skin_change,skin[6],skin_mask[6],skin_icon[6],skin_mask_icon[6];
+IMAGE white_win,black_win,record_success,numbers[10];
 vector <struct point> game_record;
 MOUSEMSG m_mouse;
 
@@ -88,18 +121,31 @@ int main(){
 }
 void load_image(){
     loadimage(&pic_chess_board,L"qipan.jpg",1110,774);
-    loadimage(&skin_mask[0],L"jian.jpg",46,46);
-    loadimage(&skin[0],L"jianjian.jpg",46,46);
-    loadimage(&skin_mask[1],L"kun.jpg",46,46);
-    loadimage(&skin[1],L"kunkun.jpg",46,46);
-    loadimage(&skin_mask[2],L"xiongmao1.jpg",46,46);
-    loadimage(&skin[2],L"xiongmao.jpg",46,46);
-    loadimage(&skin_mask[3],L"leishen1.jpg",46,46);
-    loadimage(&skin[3],L"leishen.jpg",46,46);
-    loadimage(&skin_mask[4],L"zongzi1.jpg",46,46);
-    loadimage(&skin[4],L"zongzi.jpg",46,46);
-    loadimage(&skin_mask[5],L"angel1.jpg",46,46);
-    loadimage(&skin[5],L"angel.jpg",46,46);
+    loadimage(&pic_skin_change,L"pifuxuanze.jpg");
+    loadimage(&skin_mask[0],L"jian.jpg",chess_size,chess_size);
+    loadimage(&skin[0],L"jianjian.jpg",chess_size,chess_size);
+    loadimage(&skin_mask[1],L"kun.jpg",chess_size,chess_size);
+    loadimage(&skin[1],L"kunkun.jpg",chess_size,chess_size);
+    loadimage(&skin_mask[2],L"xiongmao1.jpg",chess_size,chess_size);
+    loadimage(&skin[2],L"xiongmao.jpg",chess_size,chess_size);
+    loadimage(&skin_mask[3],L"leishen1.jpg",chess_size,chess_size);
+    loadimage(&skin[3],L"leishen.jpg",chess_size,chess_size);
+    loadimage(&skin_mask[4],L"zongzi1.jpg",chess_size,chess_size);
+    loadimage(&skin[4],L"zongzi.jpg",chess_size,chess_size);
+    loadimage(&skin_mask[5],L"angel1.jpg",chess_size,chess_size);
+    loadimage(&skin[5],L"angel.jpg",chess_size,chess_size);
+    loadimage(&skin_mask_icon[0],L"jian.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[0],L"jianjian.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_mask_icon[1],L"kun.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[1],L"kunkun.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_mask_icon[2],L"xiongmao1.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[2],L"xiongmao.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_mask_icon[3],L"leishen1.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[3],L"leishen.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_mask_icon[4],L"zongzi1.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[4],L"zongzi.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_mask_icon[5],L"angel1.jpg",chess_icon_size,chess_icon_size);
+    loadimage(&skin_icon[5],L"angel.jpg",chess_icon_size,chess_icon_size);
     loadimage(&white_win,L"whitewin.jpg");
     loadimage(&black_win,L"blackwin.jpg");
     loadimage(&record_success,L"record_success.jpg");
@@ -130,6 +176,45 @@ bool in_range_black_change_skin(MOUSEMSG m_mouse){
     }
     else return false;
 }
+
+bool in_range_change_skin_1(MOUSEMSG m_mouse){
+    //判断是否在皮肤1范围之内
+    if(m_mouse.x>=CHANGE_SKIN_1_LEFT && m_mouse.x<=CHANGE_SKIN_1_RIGHT && m_mouse.y>=CHANGE_SKIN_1_UP && m_mouse.y<=CHANGE_SKIN_1_DOWN){
+        return true;
+    }
+    else return false;
+}bool in_range_change_skin_2(MOUSEMSG m_mouse){
+    //判断是否在皮肤2范围之内
+    if(m_mouse.x>=CHANGE_SKIN_2_LEFT && m_mouse.x<=CHANGE_SKIN_2_RIGHT && m_mouse.y>=CHANGE_SKIN_2_UP && m_mouse.y<=CHANGE_SKIN_2_DOWN){
+        return true;
+    }
+    else return false;
+}bool in_range_change_skin_3(MOUSEMSG m_mouse){
+    //判断是否在皮肤3范围之内
+    if(m_mouse.x>=CHANGE_SKIN_3_LEFT && m_mouse.x<=CHANGE_SKIN_3_RIGHT && m_mouse.y>=CHANGE_SKIN_3_UP && m_mouse.y<=CHANGE_SKIN_3_DOWN){
+        return true;
+    }
+    else return false;
+}bool in_range_change_skin_4(MOUSEMSG m_mouse){
+    //判断是否在皮肤4范围之内
+    if(m_mouse.x>=CHANGE_SKIN_4_LEFT && m_mouse.x<=CHANGE_SKIN_4_RIGHT && m_mouse.y>=CHANGE_SKIN_4_UP && m_mouse.y<=CHANGE_SKIN_4_DOWN){
+        return true;
+    }
+    else return false;
+}bool in_range_change_skin_5(MOUSEMSG m_mouse){
+    //判断是否在皮肤5范围之内
+    if(m_mouse.x>=CHANGE_SKIN_5_LEFT && m_mouse.x<=CHANGE_SKIN_5_RIGHT && m_mouse.y>=CHANGE_SKIN_5_UP && m_mouse.y<=CHANGE_SKIN_5_DOWN){
+        return true;
+    }
+    else return false;
+}bool in_range_change_skin_6(MOUSEMSG m_mouse){
+    //判断是否在皮肤6范围之内
+    if(m_mouse.x>=CHANGE_SKIN_6_LEFT && m_mouse.x<=CHANGE_SKIN_6_RIGHT && m_mouse.y>=CHANGE_SKIN_6_UP && m_mouse.y<=CHANGE_SKIN_6_DOWN){
+        return true;
+    }
+    else return false;
+}
+
 bool in_range_set_chess(MOUSEMSG m_mouse){
     //判断是否在下棋范围之内
     if(m_mouse.x>=CHESS_LEFT && m_mouse.x<=CHESS_RIGHT && m_mouse.y>=CHESS_UP && m_mouse.y<=CHESS_DOWN){
@@ -374,6 +459,71 @@ void save_game_record(){
         }
     }
 }
+void show_skin(){
+    putimage(pic_x,pic_y,&pic_skin_change);
+    putimage(pic_x+38,pic_y+47,&skin_mask_icon[0],NOTSRCERASE);
+    putimage(pic_x+38,pic_y+47,&skin_icon[0],SRCINVERT);
+    putimage(pic_x+189,pic_y+47,&skin_mask_icon[1],NOTSRCERASE);
+    putimage(pic_x+189,pic_y+47,&skin_icon[1],SRCINVERT);
+    putimage(pic_x+337,pic_y+47,&skin_mask_icon[2],NOTSRCERASE);
+    putimage(pic_x+337,pic_y+47,&skin_icon[2],SRCINVERT);
+    putimage(pic_x+38,pic_y+182,&skin_mask_icon[3],NOTSRCERASE);
+    putimage(pic_x+38,pic_y+182,&skin_icon[3],SRCINVERT);
+    putimage(pic_x+187,pic_y+182,&skin_mask_icon[4],NOTSRCERASE);
+    putimage(pic_x+187,pic_y+182,&skin_icon[4],SRCINVERT);
+    putimage(pic_x+343,pic_y+182,&skin_mask_icon[5],NOTSRCERASE);
+    putimage(pic_x+343,pic_y+182,&skin_icon[5],SRCINVERT);
+}
+int chose_skin(){
+    //不知道为什么要点很多次才有作用
+    int flag=1,k=0;
+    while(flag){
+        m_mouse = GetMouseMsg();
+        switch (m_mouse.uMsg) {	
+            case WM_LBUTTONDOWN:{
+                if(in_range_change_skin_1(m_mouse)){
+                    k=0;
+                    flag=0;
+                }
+                else if(in_range_change_skin_2(m_mouse)){
+                    k=1;
+                    flag=0;
+                }
+                else if(in_range_change_skin_3(m_mouse)){
+                    k=2;
+                    flag=0;
+                }
+                else if(in_range_change_skin_4(m_mouse)){
+                    k=3;
+                    flag=0;                
+                }
+                else if(in_range_change_skin_5(m_mouse)){
+                    k=4;
+                    flag=0;
+                }
+                else if(in_range_change_skin_6(m_mouse)){
+                    k=5;
+                    flag=0;
+                }
+            }
+        }
+    }
+    return k;
+}
+void white_skin_change(){
+    show_skin();
+    int new_skin=chose_skin();
+    if(new_skin!=black_using_skin_num){
+         white_using_skin_num=new_skin;
+    }
+}
+void black_skin_change(){
+    show_skin();
+    int new_skin=chose_skin();
+    if(new_skin!=white_using_skin_num){
+        black_using_skin_num=new_skin;
+    }
+}
 void play(){
     while(1){
         m_mouse = GetMouseMsg();
@@ -393,6 +543,12 @@ void play(){
                 }
                 else if(in_range_record(m_mouse)){
                     save_game_record();
+                }
+                else if(in_range_white_change_skin(m_mouse)){
+                    white_skin_change();
+                }
+                else if(in_range_black_change_skin(m_mouse)){
+                    black_skin_change();
                 }
                 //这里以后加更多按钮的功能
             }
