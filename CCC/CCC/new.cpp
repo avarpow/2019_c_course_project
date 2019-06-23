@@ -48,6 +48,16 @@ void play();
 #define REPLAY_DOWN 584
 #define REPLAY_LEFT 674
 #define REPLAY_RIGHT 821
+//白色方换皮肤按钮
+#define WHITE_CHANGE_SKIN_UP 366
+#define WHITE_CHANGE_SKIN_DOWN 404
+#define WHITE_CHANGE_SKIN_LEFT 31
+#define WHITE_CHANGE_SKIN_RIGHT 144
+//黑色方换皮肤按钮
+#define BLACK_CHANGE_SKIN_UP 367
+#define BLACK_CHANGE_SKIN_DOWN 403
+#define BLACK_CHANGE_SKIN_LEFT 969
+#define BLACK_CHANGE_SKIN_RIGHT 1062
 enum which_side{
     WHITE_SIDE,BLACK_SIDE//分别是白方下棋和黑方下棋
 };
@@ -66,8 +76,8 @@ int black_using_skin_num;
 int white_money;
 int black_money;
 int now_page=GAME_PAGE;
-IMAGE pic_chess_board,white_skin[3],white_skin_mask[3],black_skin[3],black_skin_mask[3];
-IMAGE white_win,black_win,record_success;
+IMAGE pic_chess_board,skin[6],skin_mask[6],skin_icon[6],skin_mask_icon[6];
+IMAGE white_win,black_win,record_success，numbers[10];
 vector <struct point> game_record;
 MOUSEMSG m_mouse;
 
@@ -78,18 +88,18 @@ int main(){
 }
 void load_image(){
     loadimage(&pic_chess_board,L"qipan.jpg",1110,774);
-    loadimage(&white_skin_mask[0],L"jian.jpg",46,46);
-    loadimage(&white_skin[0],L"jianjian.jpg",46,46);
-    loadimage(&black_skin_mask[0],L"kun.jpg",46,46);
-    loadimage(&black_skin[0],L"kunkun.jpg",46,46);
-    loadimage(&white_skin_mask[1],L"xiongmao1.jpg",46,46);
-    loadimage(&white_skin[1],L"xiongmao.jpg",46,46);
-    loadimage(&black_skin_mask[1],L"leishen1.jpg",46,46);
-    loadimage(&black_skin[1],L"leishen.jpg",46,46);
-    loadimage(&white_skin_mask[2],L"zongzi1.jpg",46,46);
-    loadimage(&white_skin[2],L"zongzi.jpg",46,46);
-    loadimage(&black_skin_mask[2],L"angel1.jpg",46,46);
-    loadimage(&black_skin[2],L"angel.jpg",46,46);
+    loadimage(&skin_mask[0],L"jian.jpg",46,46);
+    loadimage(&skin[0],L"jianjian.jpg",46,46);
+    loadimage(&skin_mask[1],L"kun.jpg",46,46);
+    loadimage(&skin[1],L"kunkun.jpg",46,46);
+    loadimage(&skin_mask[2],L"xiongmao1.jpg",46,46);
+    loadimage(&skin[2],L"xiongmao.jpg",46,46);
+    loadimage(&skin_mask[3],L"leishen1.jpg",46,46);
+    loadimage(&skin[3],L"leishen.jpg",46,46);
+    loadimage(&skin_mask[4],L"zongzi1.jpg",46,46);
+    loadimage(&skin[4],L"zongzi.jpg",46,46);
+    loadimage(&skin_mask[5],L"angel1.jpg",46,46);
+    loadimage(&skin[5],L"angel.jpg",46,46);
     loadimage(&white_win,L"whitewin.jpg");
     loadimage(&black_win,L"blackwin.jpg");
     loadimage(&record_success,L"record_success.jpg");
@@ -100,11 +110,25 @@ void game_init(){
     memset(chess_board,0,sizeof(chess_board));
     game_record.clear();
     play_side_now=BLACK_SIDE;
-    white_using_skin_num=2;
-    black_using_skin_num=2;
+    white_using_skin_num=0;
+    black_using_skin_num=1;
     white_money=0;
     black_money=0;
     draw_chess_board(chess_board);
+}
+bool in_range_white_change_skin(MOUSEMSG m_mouse){
+    //判断是否在白棋换皮肤范围之内
+    if(m_mouse.x>=WHITE_CHANGE_SKIN_LEFT && m_mouse.x<=WHITE_CHANGE_SKIN_RIGHT && m_mouse.y>=WHITE_CHANGE_SKIN_UP && m_mouse.y<=WHITE_CHANGE_SKIN_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_black_change_skin(MOUSEMSG m_mouse){
+    //判断是否在黑棋换皮肤范围之内
+    if(m_mouse.x>=BLACK_CHANGE_SKIN_LEFT && m_mouse.x<=BLACK_CHANGE_SKIN_RIGHT && m_mouse.y>=BLACK_CHANGE_SKIN_UP && m_mouse.y<=BLACK_CHANGE_SKIN_DOWN){
+        return true;
+    }
+    else return false;
 }
 bool in_range_set_chess(MOUSEMSG m_mouse){
     //判断是否在下棋范围之内
@@ -198,16 +222,17 @@ void draw_chess_board(int chess_board[][15]){
 	setbkcolor(RGB(245, 211, 155));
 	cleardevice();
 	putimage(0, 0, &pic_chess_board);
+
     for(int i=0;i<15;i++){
         for(int j=0;j<15;j++){ 
             if(chess_board[i][j]==1){
-                putimage(234-23+46*i, 113-23+46*j, &black_skin_mask[black_using_skin_num],NOTSRCERASE);
-                putimage(234-23+46*i, 113-23+46*j, &black_skin[black_using_skin_num],SRCINVERT);
+                putimage(234-23+46*i, 113-23+46*j, &skin_mask[black_using_skin_num],NOTSRCERASE);
+                putimage(234-23+46*i, 113-23+46*j, &skin[black_using_skin_num],SRCINVERT);
 
             }
             else if(chess_board[i][j]==-1){
-                putimage(234-23+46*i, 113-23+46*j, &white_skin_mask[white_using_skin_num],NOTSRCERASE);
-                putimage(234-23+46*i, 113-23+46*j, &white_skin[white_using_skin_num],SRCINVERT);
+                putimage(234-23+46*i, 113-23+46*j, &skin_mask[white_using_skin_num],NOTSRCERASE);
+                putimage(234-23+46*i, 113-23+46*j, &skin[white_using_skin_num],SRCINVERT);
             }
         }
     }
@@ -257,8 +282,6 @@ void game_reset(){
     memset(chess_board,0,sizeof(chess_board));
     game_record.clear();
     play_side_now=BLACK_SIDE;
-    white_using_skin_num=0;
-    black_using_skin_num=0;
     draw_chess_board(chess_board);
 }
 void game_replay(){
