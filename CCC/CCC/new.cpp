@@ -114,21 +114,21 @@ bool in_range_set_chess(MOUSEMSG m_mouse){
     else return false;
 }
 bool in_range_return(MOUSEMSG m_mouse){
-    //判断是否在下棋范围之内
+    //判断是否在返回菜单范围之内
     if(m_mouse.x>=RETURN_LEFT && m_mouse.x<=RETURN_RIGHT && m_mouse.y>=RETURN_UP && m_mouse.y<=RETURN_DOWN){
         return true;
     }
     else return false;
 }
 bool in_range_record_end(MOUSEMSG m_mouse){
-    //判断是否在下棋范围之内
+    //判断是否在胜利界面的记录对局之内
     if(m_mouse.x>=RECORD_END_LEFT && m_mouse.x<=RECORD_END_RIGHT && m_mouse.y>=RECORD_END_UP && m_mouse.y<=RECORD_END_DOWN){
         return true;
     }
     else return false;
 }
 bool in_range_replay(MOUSEMSG m_mouse){
-    //判断是否在下棋范围之内
+    //判断是否在精彩重播之内
     if(m_mouse.x>=REPLAY_LEFT && m_mouse.x<=REPLAY_RIGHT && m_mouse.y>=REPLAY_UP && m_mouse.y<=REPLAY_DOWN){
         return true;
     }
