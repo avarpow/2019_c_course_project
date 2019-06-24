@@ -122,16 +122,47 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest1
 {
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(change_skin_success)
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(white_skin_change_success)
 		{
 			MOUSEMSG m_mouse;
 			m_mouse.x = 100;
 			m_mouse.y = 200;
 			bool result = in_range_white_change_skin(m_mouse);
+			Assert::AreEqual(false,result);
+		}
+		TEST_METHOD(black_skin_change_success)
+		{
+			MOUSEMSG m_mouse;
+			m_mouse.x = 100;
+			m_mouse.y = 200;
+			bool result = in_range_black_change_skin(m_mouse);
+			Assert::AreEqual(false,result);
+		}
+
+	};
+	
+	TEST_CLASS(change_skin_fail)
+	{
+	public:
+		
+		TEST_METHOD(white_skin_change_fail)
+		{
+			MOUSEMSG m_mouse;
+			m_mouse.x = 100;
+			m_mouse.y = 200;
+			bool result = in_range_white_change_skin(m_mouse);
+			Assert::AreEqual(false,result);
+		}
+		TEST_METHOD(black_skin_change_fail)
+		{
+			MOUSEMSG m_mouse;
+			m_mouse.x = 100;
+			m_mouse.y = 200;
+			bool result = in_range_black_change_skin(m_mouse);
 			Assert::AreEqual(false,result);
 		}
 
