@@ -560,7 +560,7 @@ void black_skin_change(){
     if(new_skin!=white_using_skin_num){
         black_using_skin_num=new_skin;
     }
-}
+} 
 void play(){
     while(1){
         m_mouse = GetMouseMsg();
