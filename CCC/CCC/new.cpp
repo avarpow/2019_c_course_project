@@ -360,7 +360,7 @@ void draw_chess_board(int chess_board[][15]){
     }
 }
 int is_five(int row,int column,int which_side){
-    int i, j, k = 0, p[4] = {0,-1,-1,-1}, q[4] = {1,1,0,-1,},chess_count=0,z;
+    int i, j, k = 0, p[4] = {0,-1,-1,-1}, q[4] = {1,1,0,-1,},chess_count=0,z = 0;
     if(which_side == WHITE_SIDE){
         z=-1;
     }
@@ -409,7 +409,7 @@ void game_reset(){
 void game_replay(){
     memset(chess_board,0,sizeof(chess_board));
     play_side_now=BLACK_SIDE;
-    for(int i=0;i<game_record.size();i++){
+    for(int i=0;i<int(game_record.size());i++){
         
         switch(play_side_now){
             case WHITE_SIDE:
@@ -481,7 +481,9 @@ void save_game_record(){
             fprintf(fp,"step:%d row=%d column=%d\n",i++,(*iter).x,(*iter).y);
         }
     }
-    fclose(fp);
+	if (fp != NULL) {
+	  fclose(fp);
+	}
     putimage(500, 350, &record_success);
     wait_mouse_click();
     if(now_page== GAME_PAGE){
