@@ -156,6 +156,7 @@ namespace change_skin_test
 			m_mouse.y = 200;
 			bool result = in_range_white_change_skin(m_mouse);
 			Assert::AreEqual(false,result);
+			return;
 		}
 		TEST_METHOD(black_skin_change_fail)
 		{
@@ -164,6 +165,7 @@ namespace change_skin_test
 			m_mouse.y = 200;
 			bool result = in_range_black_change_skin(m_mouse);
 			Assert::AreEqual(false,result);
+			return;
 		}
 
 	};
