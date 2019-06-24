@@ -120,7 +120,7 @@ void after_win_action();
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace UnitTest1
+namespace change_skin_test
 {
 	TEST_CLASS(change_skin_success)
 	{
