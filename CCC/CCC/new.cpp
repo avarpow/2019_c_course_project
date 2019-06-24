@@ -864,7 +864,7 @@ void play(){
                 if(in_range_set_chess(m_mouse)){
                     set_chess(m_mouse,play_side_now);
                     check_win();
-                    if(rival_now == AI){
+                    if(rival_now == AI && play_side_now == WHITE_SIDE){
                         ai_set_chess();
                         check_win();
                     }
