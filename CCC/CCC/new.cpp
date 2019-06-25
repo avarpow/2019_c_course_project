@@ -7,7 +7,10 @@
 #include<vector>
 using namespace std;
 void load_image();
+void chose_rival();
 void game_init();
+bool in_range_vs_human(MOUSEMSG m_mouse);
+bool in_range_vs_ai(MOUSEMSG m_mouse);
 //按钮相关
 bool in_range_white_change_skin(MOUSEMSG m_mouse);
 bool in_range_black_change_skin(MOUSEMSG m_mouse);
@@ -50,6 +53,16 @@ int CountScore(int n[], int turn); // 算单个数组分
 int Evaluate();
 int Max_AlphaBeta(int Dep, int alpha, int beta); // 轮到AI下子时，AI作的选择 
 int Min_AlphaBeta(int Dep, int alpha, int beta); // 轮到对手下子时，对手作的选择
+//人人对战范围
+#define VS_HUMAN_UP 315
+#define VS_HUMAN_DOWN 389
+#define VS_HUMAN_LEFT 257
+#define VS_HUMAN_RIGHT 437
+//人机对战范围
+#define VS_AI_UP 317
+#define VS_AI_DOWN 389
+#define VS_AI_LEFT 627
+#define VS_AI_RIGHT 807
 //棋盘范围
 #define CHESS_UP 98
 #define CHESS_DOWN 772
@@ -159,7 +172,7 @@ int pic_x=300,pic_y=200;
 int chess_icon_size=120;
 int rival_now;
 IMAGE pic_chess_board,pic_skin_change,skin[6],skin_mask[6],skin_icon[6],skin_mask_icon[6];
-IMAGE white_win,black_win,record_success,numbers[10];
+IMAGE white_win,black_win,record_success,numbers[10],menu;
 vector <struct point> game_record;
 MOUSEMSG m_mouse;
 
@@ -169,6 +182,7 @@ int main(){
     play();
 }
 void load_image(){
+    loadimage(&menu,L"caidan.jpg");
     loadimage(&pic_chess_board,L"qipan.jpg",1110,774);
     loadimage(&pic_skin_change,L"pifuxuanze.jpg");
     loadimage(&skin_mask[0],L"jian.jpg",chess_size,chess_size);
@@ -199,18 +213,52 @@ void load_image(){
     loadimage(&black_win,L"blackwin.jpg");
     loadimage(&record_success,L"record_success.jpg");
 }
+void chose_rival(){
+    //进入菜单选择对手
+    int flag=1,k=0;
+    putimage(0,0,&menu);
+    while(flag){
+        m_mouse = GetMouseMsg();
+        switch (m_mouse.uMsg) {	
+            case WM_LBUTTONDOWN:{
+                if(in_range_vs_human(m_mouse)){
+                    rival_now=HUMAN;
+                    flag=0;
+                }
+                else if(in_range_vs_ai(m_mouse)){
+                    rival_now=AI;
+                    flag=0;
+                }
+            }
+        }
+    }
+}
 void game_init(){
     //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
 	initgraph(1110, 774);    
     memset(chess_board,0,sizeof(chess_board));
     game_record.clear();
     play_side_now=BLACK_SIDE;
-    rival_now=AI;
+    chose_rival();
     white_using_skin_num=0;
     black_using_skin_num=1;
     white_money=0;
     black_money=0;
     draw_chess_board(chess_board);
+}
+bool in_range_vs_human(MOUSEMSG m_mouse){
+    //判断是否选择人人对战
+    if(m_mouse.x>=VS_HUMAN_LEFT && m_mouse.x<=VS_HUMAN_RIGHT && m_mouse.y>=VS_HUMAN_UP && m_mouse.y<=VS_HUMAN_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_vs_ai(MOUSEMSG m_mouse){
+    //判断是否选择人机对战
+    if(m_mouse.x>=VS_AI_LEFT && m_mouse.x<=VS_AI_RIGHT && m_mouse.y>=VS_AI_UP && m_mouse.y<=VS_AI_DOWN){
+        return true;
+    }
+    else return false;
 }
 bool in_range_white_change_skin(MOUSEMSG m_mouse){
     //判断是否在白棋换皮肤范围之内
