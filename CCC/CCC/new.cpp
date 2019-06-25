@@ -31,7 +31,7 @@ void wait_mouse_click();
 void draw_chess_board(int chess_board[][15]);
 int one_side_win(int which_side);
 int is_five(int row,int column,int which_side);
-int is_one_side_win(int which_side);
+bool is_one_side_win(int which_side);
 void win(int which_side);
 void save_game_record();
 void show_skin();
@@ -398,12 +398,12 @@ int is_five(int row,int column,int which_side){
 	}
 	return k;
     }
-int is_one_side_win(int which_side){
+bool is_one_side_win(int which_side){
     if(which_side == WHITE_SIDE){
         for(int i=0;i<15;i++){
             for(int j=0;j<15;j++){
                 if(is_five(i,j,WHITE_SIDE)){
-                    return 1;
+                    return true;
                 }
             }
         }
@@ -412,12 +412,12 @@ int is_one_side_win(int which_side){
         for(int i=0;i<15;i++){
             for(int j=0;j<15;j++){
                 if(is_five(i,j,BLACK_SIDE)){
-                    return 1;
+                    return true;
                 }
             }
         }
     }
-    return 0;
+    return false;
 }
 
 void game_reset(){

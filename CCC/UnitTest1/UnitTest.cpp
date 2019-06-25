@@ -10,6 +10,7 @@
 using namespace std;
 void load_image();
 void game_init();
+//按钮相关
 bool in_range_white_change_skin(MOUSEMSG m_mouse);
 bool in_range_black_change_skin(MOUSEMSG m_mouse);
 bool in_range_reset(MOUSEMSG m_mouse);
@@ -25,13 +26,13 @@ bool in_range_record_end(MOUSEMSG m_mouse);
 bool in_range_replay(MOUSEMSG m_mouse);
 bool in_range_withdraw(MOUSEMSG m_mouse);
 bool in_range_record(MOUSEMSG m_mouse);
+//逻辑相关
 void set_chess(MOUSEMSG m_mouse, int& play_side_now);
 void withdraw();
 void wait_mouse_click();
 void draw_chess_board(int chess_board[][15]);
-int one_side_win(int which_side);
 int is_five(int row, int column, int which_side);
-int is_one_side_win(int which_side);
+bool is_one_side_win(int which_side);
 void win(int which_side);
 void save_game_record();
 void show_skin();
@@ -42,6 +43,7 @@ int chose_skin();
 void white_skin_change();
 void black_skin_change();
 void after_win_action();
+extern int chess_board[15][15];
 //棋盘范围
 #define CHESS_UP 98
 #define CHESS_DOWN 772
@@ -117,7 +119,22 @@ void after_win_action();
 #define CHANGE_SKIN_6_DOWN (pic_y+182+chess_icon_size)
 #define CHANGE_SKIN_6_LEFT (pic_x+343)
 #define CHANGE_SKIN_6_RIGHT (pic_x+343+chess_icon_size)
-
+const int BLACK_CHESS = 1;
+const int WHITE_CHESS = -1;
+const int EMPTY = 0;
+enum which_rival {
+	HUMAN, AI
+};
+enum which_side {
+	WHITE_SIDE, BLACK_SIDE//分别是白方下棋和黑方下棋
+};
+enum which_page {
+	GAME_PAGE, SKIN_PAGE, WIN_PAGE
+};
+struct point {
+	int x = 0;
+	int y = 0;
+};
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace change_skin_test
@@ -169,4 +186,41 @@ namespace change_skin_test
 		}
 
 	};
+}
+namespace is_win_test 
+{
+	TEST_CLASS(white_win_success) {
+		TEST_METHOD(test1) {
+			memset(chess_board, -1 , sizeof(chess_board));
+			bool result = is_one_side_win(WHITE_SIDE);
+			Assert::AreEqual(true, result);
+		}
+		TEST_METHOD(test2) {
+			int test[15][15] = {
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,-1,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,-1,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,-1,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			};
+			for (int i = 0; i < 15; i++) {
+				for (int j = 0; j < 15; j++) {
+					chess_board[i][j] = test[i][j];
+				}
+			}
+			bool result = is_one_side_win(WHITE_SIDE);
+			Assert::AreEqual(true, result);
+		}
+	};
+
 }
