@@ -95,22 +95,26 @@ int Min_AlphaBeta(int Dep, int alpha, int beta); // 轮到对手下子时，对�
 #define REPLAY_DOWN 584
 #define REPLAY_LEFT 674
 #define REPLAY_RIGHT 821
-//白色方换皮肤按钮
-#define WHITE_CHANGE_SKIN_UP 366
-#define WHITE_CHANGE_SKIN_DOWN 404
-#define WHITE_CHANGE_SKIN_LEFT 31
-#define WHITE_CHANGE_SKIN_RIGHT 144
 //黑色方换皮肤按钮
-#define BLACK_CHANGE_SKIN_UP 367
-#define BLACK_CHANGE_SKIN_DOWN 403
-#define BLACK_CHANGE_SKIN_LEFT 969
-#define BLACK_CHANGE_SKIN_RIGHT 1062 
-//小数字宽高
-#define number_small_w 36
-#define number_small_h 52
-//大数字宽高
-#define number_big_w 46
-#define number_big_h 65
+#define BLACK_CHANGE_SKIN_UP 459
+#define BLACK_CHANGE_SKIN_DOWN 503
+#define BLACK_CHANGE_SKIN_LEFT 46
+#define BLACK_CHANGE_SKIN_RIGHT 144
+//白色方换皮肤按钮
+#define WHITE_CHANGE_SKIN_UP 460
+#define WHITE_CHANGE_SKIN_DOWN 503
+#define WHITE_CHANGE_SKIN_LEFT 969
+#define WHITE_CHANGE_SKIN_RIGHT 1062 
+//黑色认输按钮
+#define BLACK_GIVE_UP_UP 551
+#define BLACK_GIVE_UP_DOWN 594
+#define BLACK_GIVE_UP_LEFT 46
+#define BLACK_GIVE_UP_RIGHT 144
+//白色方认输按钮
+#define WHITE_GIVE_UP_UP 552
+#define WHITE_GIVE_UP_DOWN 598
+#define WHITE_GIVE_UP_LEFT 969
+#define WHITE_GIVE_UP_RIGHT 1062 
 //重来按钮
 #define RESET_UP 36
 #define RESET_DOWN 73
@@ -178,9 +182,16 @@ int now_page = GAME_PAGE;
 int chess_size = 46;
 int pic_x = 300, pic_y = 200;
 int chess_icon_size = 120;
+
+int number_small_weight = 36;
+int number_small_height = 52;
+int number_big_weight = 46;
+int number_big_height = 65;
 int rival_now;
+int rounds;
+int in_replay = 0;
 IMAGE pic_chess_board, pic_skin_change, skin[6], skin_mask[6], skin_icon[6], skin_mask_icon[6];
-IMAGE white_win, black_win, record_success, numbers_s[10], numbers_mask_s[10], numbers_b[10], numbers_mask_b[10];
+IMAGE menu,white_win, black_win, record_success, numbers_s[10], numbers_mask_s[10], numbers_b[10], numbers_mask_b[10];
 vector <struct point> game_record;
 MOUSEMSG m_mouse;
 
@@ -191,6 +202,7 @@ int main() {
 }
 void load_image() {
 	loadimage(&pic_chess_board, L"qipan.jpg", 1110, 774);
+	loadimage(&menu, L"caidan.jpg");
 	loadimage(&pic_skin_change, L"pifuxuanze.jpg");
 	loadimage(&skin_mask[0], L"jian.jpg", chess_size, chess_size);
 	loadimage(&skin[0], L"jianjian.jpg", chess_size, chess_size);
@@ -219,52 +231,52 @@ void load_image() {
 	loadimage(&white_win, L"whitewin.jpg");
 	loadimage(&black_win, L"blackwin.jpg");
 	loadimage(&record_success, L"record_success.jpg");
-	loadimage(&numbers_s[0], L"0.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[1], L"1.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[2], L"2.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[3], L"3.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[4], L"4.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[5], L"5.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[6], L"6.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[7], L"7.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[8], L"8.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_s[9], L"9.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_b[0], L"0.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[1], L"1.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[2], L"2.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[3], L"3.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[4], L"4.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[5], L"5.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[6], L"6.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[7], L"7.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[8], L"8.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[9], L"9.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_b[9], L"9.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[0], L"00.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[1], L"11.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[2], L"22.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[3], L"33.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[4], L"44.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[5], L"55.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[6], L"66.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[7], L"77.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[8], L"88.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_b[9], L"99.jpg", number_big_w, number_big_h);
-	loadimage(&numbers_mask_s[0], L"00.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[1], L"11.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[2], L"22.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[3], L"33.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[4], L"44.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[5], L"55.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[6], L"66.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[7], L"77.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[8], L"88.jpg", number_small_w, number_small_h);
-	loadimage(&numbers_mask_s[9], L"99.jpg", number_small_w, number_small_h);
+	loadimage(&numbers_s[0], L"0.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[1], L"1.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[2], L"2.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[3], L"3.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[4], L"4.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[5], L"5.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[6], L"6.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[7], L"7.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[8], L"8.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[9], L"9.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_b[0], L"0.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[1], L"1.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[2], L"2.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[3], L"3.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[4], L"4.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[5], L"5.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[6], L"6.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[7], L"7.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[8], L"8.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[9], L"9.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[9], L"9.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[0], L"00.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[1], L"11.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[2], L"22.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[3], L"33.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[4], L"44.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[5], L"55.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[6], L"66.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[7], L"77.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[8], L"88.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[9], L"99.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_s[0], L"00.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[1], L"11.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[2], L"22.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[3], L"33.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[4], L"44.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[5], L"55.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[6], L"66.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[7], L"77.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[8], L"88.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[9], L"99.jpg", number_small_weight, number_small_height);
 }
 void chose_rival(){
     //进入菜单选择对手
-    int flag=1,k=0;
-    putimage(0,0,&menu);
+	int flag = 1, k = 0;
+	putimage(0,0,&menu);
     while(flag){
         m_mouse = GetMouseMsg();
         switch (m_mouse.uMsg) {	
@@ -288,11 +300,12 @@ void game_init(){
     game_record.clear();
     play_side_now=BLACK_SIDE;
     chose_rival();
-    white_using_skin_num=0;
-    black_using_skin_num=1;
-    white_money=0;
-    black_money=0;
-    draw_chess_board(chess_board);
+	white_using_skin_num = 0;
+	black_using_skin_num = 1;
+	white_money=0;
+	black_money = 0;
+	rounds = 0;
+	draw_chess_board(chess_board);
 }
 bool in_range_vs_human(MOUSEMSG m_mouse){
     //判断是否选择人人对战
@@ -304,6 +317,20 @@ bool in_range_vs_human(MOUSEMSG m_mouse){
 bool in_range_vs_ai(MOUSEMSG m_mouse){
     //判断是否选择人机对战
     if(m_mouse.x>=VS_AI_LEFT && m_mouse.x<=VS_AI_RIGHT && m_mouse.y>=VS_AI_UP && m_mouse.y<=VS_AI_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_black_give_up(MOUSEMSG m_mouse){
+    //判断是否在黑棋认输范围之内
+    if(m_mouse.x>=BLACK_GIVE_UP_LEFT && m_mouse.x<=BLACK_GIVE_UP_RIGHT && m_mouse.y>=BLACK_GIVE_UP_UP && m_mouse.y<=BLACK_GIVE_UP_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_white_give_up(MOUSEMSG m_mouse){
+    //判断是否在白棋认输范围之内
+    if(m_mouse.x>=WHITE_GIVE_UP_LEFT && m_mouse.x<=WHITE_GIVE_UP_RIGHT && m_mouse.y>=WHITE_GIVE_UP_UP && m_mouse.y<=WHITE_GIVE_UP_DOWN){
         return true;
     }
     else return false;
@@ -418,6 +445,7 @@ void set_chess(MOUSEMSG m_mouse, int& play_side_now) {
 	temp.y = min(temp.y, 14);
 	if (chess_board[temp.x][temp.y] == 0) {
 		game_record.push_back(temp);
+		rounds++;
 		switch (play_side_now) {
 		case WHITE_SIDE:
 		{
@@ -441,6 +469,7 @@ void withdraw() {
 		point last_point = game_record.back();
 		game_record.pop_back();
 		chess_board[last_point.x][last_point.y] = 0;
+		rounds--;
 		draw_chess_board(chess_board);
 	}
 }
@@ -460,8 +489,11 @@ void draw_chess_board(int chess_board[][15]) {
 	setbkcolor(RGB(245, 211, 155));
 	cleardevice();
 	putimage(0, 0, &pic_chess_board);
-
-	for (int i = 0; i < 15; i++) {
+	points(WHITE_SIDE, white_money);
+	points(BLACK_SIDE, black_money);
+	round(rounds);
+	for (int i = 0; i < 15; i++)
+	{
 		for (int j = 0; j < 15; j++) {
 			if (chess_board[i][j] == 1) {
 				putimage(234 - 23 + 46 * i, 113 - 23 + 46 * j, &skin_mask[black_using_skin_num], NOTSRCERASE);
@@ -518,13 +550,16 @@ bool is_one_side_win(int which_side) {
 
 void game_reset() {
 	memset(chess_board, 0, sizeof(chess_board));
+	rounds = 0;
 	game_record.clear();
 	play_side_now = BLACK_SIDE;
 	draw_chess_board(chess_board);
 }
 void game_replay() {
+	in_replay = 1;
 	memset(chess_board, 0, sizeof(chess_board));
 	play_side_now = BLACK_SIDE;
+	rounds = 0;
 	for (int i = 0; i<int(game_record.size()); i++) {
 
 		switch (play_side_now) {
@@ -541,6 +576,7 @@ void game_replay() {
 			break;
 		}
 		}
+		rounds++;
 		draw_chess_board(chess_board);
 		Sleep(500);
 	}
@@ -551,6 +587,7 @@ void game_replay() {
 	else if (is_one_side_win(BLACK_SIDE)) {
 		win(BLACK_SIDE);
 	}
+	in_replay = 0;
 }
 void after_win_action() {
 	now_page = WIN_PAGE;
@@ -560,6 +597,7 @@ void after_win_action() {
 		switch (m_mouse.uMsg) {
 		case WM_LBUTTONDOWN: {
 			if (in_range_return(m_mouse)) {
+				chose_rival();
 				flag = 0;
 			}
 			else if (in_range_record_end(m_mouse)) {
@@ -574,17 +612,17 @@ void after_win_action() {
 	}
 }
 
-void points(int side, int sum) {
+void points(int which_side_now, int value) {
 	int num1, num2;
-	num2 = sum % 10;
-	num1 = sum / 10;
-	if (side == 1) {
+	num2 = value % 10;
+	num1 = value / 10;
+	if (which_side_now == BLACK_SIDE) {
 		putimage(130, 380, &numbers_mask_s[num1], NOTSRCERASE);
 		putimage(130, 380, &numbers_s[num1], SRCINVERT);
 		putimage(166, 380, &numbers_mask_s[num2], NOTSRCERASE);
 		putimage(166, 380, &numbers_s[num2], SRCINVERT);
 	}
-	else if (side == 2) {
+	else if (which_side_now == WHITE_SIDE) {
 		putimage(1029, 380, &numbers_mask_s[num1], NOTSRCERASE);
 		putimage(1029, 380, &numbers_s[num1], SRCINVERT);
 		putimage(1060, 380, &numbers_mask_s[num2], NOTSRCERASE);
@@ -592,10 +630,10 @@ void points(int side, int sum) {
 	}
 }
 
-void round(int sum) {
+void round(int value) {
 	int num1, num2;
-	num2 = sum % 10;
-	num1 = sum / 10;
+	num2 = value % 10;
+	num1 = value / 10;
 	putimage(1014, 20, &numbers_mask_b[num1], NOTSRCERASE);
 	putimage(1014, 20, &numbers_b[num1], SRCINVERT);
 	putimage(1060, 20, &numbers_mask_b[num2], NOTSRCERASE);
@@ -604,13 +642,17 @@ void round(int sum) {
 
 void win(int which_side) {
 	if (which_side == WHITE_SIDE) {
-		white_money += 10;
+		if(!in_replay){
+			white_money += 5;
+		}
 		putimage(0, 0, &white_win);
 		after_win_action();
 		game_reset();
 	}
 	else if (which_side == BLACK_SIDE) {
-		black_money += 10;
+		if(!in_replay){
+			black_money += 5;
+		}
 		putimage(0, 0, &black_win);
 		after_win_action();
 		game_reset();
@@ -970,6 +1012,7 @@ void ai_set_chess() {
 	if (chess_board[pos.x][pos.y] == 0) {
 		game_record.push_back(pos);
 		chess_board[pos.x][pos.y] = -1;
+		rounds++;
 		play_side_now = BLACK_SIDE;
 		draw_chess_board(chess_board);
 	}
@@ -1013,6 +1056,12 @@ void play() {
 			}
 			else if (in_range_reset(m_mouse)) {
 				game_reset();
+			}
+			else if(in_range_white_give_up(m_mouse)){
+				win(BLACK_SIDE);
+			}
+			else if(in_range_black_give_up(m_mouse)){
+				win(WHITE_SIDE);
 			}
 			//这里以后加更多按钮的功能
 		}
