@@ -11,6 +11,8 @@ void chose_rival();
 void game_init();
 bool in_range_vs_human(MOUSEMSG m_mouse);
 bool in_range_vs_ai(MOUSEMSG m_mouse);
+bool in_range_black_give_up(MOUSEMSG m_mouse);
+bool in_range_white_give_up(MOUSEMSG m_mouse);
 //按钮相关
 bool in_range_white_change_skin(MOUSEMSG m_mouse);
 bool in_range_black_change_skin(MOUSEMSG m_mouse);
@@ -50,21 +52,26 @@ void round(int sum);
 //AI相关
 
 int Around(int x, int y); // 周围是否有子存在，无子的就加入考虑 
-int ScoretTable(int Number, int Empty); // 积分表 
+int ScoreTable(int Number, int Empty);
+// 积分表 
 int CountScore(int n[], int turn); // 算单个数组分 
 int Evaluate();
 int Max_AlphaBeta(int Dep, int alpha, int beta); // 轮到AI下子时，AI作的选择 
+struct point MinMax_AlphaBeta(int Dep);
+struct point aiTurn(int chess_board[15][15]);
+void ai_set_chess();
+void check_win();
 int Min_AlphaBeta(int Dep, int alpha, int beta); // 轮到对手下子时，对手作的选择
 //人人对战范围
-#define VS_HUMAN_UP 315
-#define VS_HUMAN_DOWN 389
-#define VS_HUMAN_LEFT 257
-#define VS_HUMAN_RIGHT 437
+#define VS_HUMAN_UP 449
+#define VS_HUMAN_DOWN 552
+#define VS_HUMAN_LEFT 278
+#define VS_HUMAN_RIGHT 469
 //人机对战范围
-#define VS_AI_UP 317
-#define VS_AI_DOWN 389
-#define VS_AI_LEFT 627
-#define VS_AI_RIGHT 807
+#define VS_AI_UP 452
+#define VS_AI_DOWN 555
+#define VS_AI_LEFT 679
+#define VS_AI_RIGHT 875
 //棋盘范围
 #define CHESS_UP 98
 #define CHESS_DOWN 772
@@ -171,7 +178,6 @@ struct point {
 int Map[15][15], win_s[2][2005];
 int BLACK_CHESS_table[15][15][2005], OTtable[15][15][2005];
 int Start, Count;
-
 int chess_board[15][15] = { 0 };
 int play_side_now;//描述当前是白方还是黑方下棋
 int white_using_skin_num;
@@ -182,7 +188,6 @@ int now_page = GAME_PAGE;
 int chess_size = 46;
 int pic_x = 300, pic_y = 200;
 int chess_icon_size = 120;
-
 int number_small_weight = 36;
 int number_small_height = 52;
 int number_big_weight = 46;
@@ -201,77 +206,92 @@ int main() {
 	play();
 }
 void load_image() {
-	loadimage(&pic_chess_board, L"qipan.jpg", 1110, 774);
-	loadimage(&menu, L"caidan.jpg");
-	loadimage(&pic_skin_change, L"pifuxuanze.jpg");
-	loadimage(&skin_mask[0], L"jian.jpg", chess_size, chess_size);
-	loadimage(&skin[0], L"jianjian.jpg", chess_size, chess_size);
-	loadimage(&skin_mask[1], L"kun.jpg", chess_size, chess_size);
-	loadimage(&skin[1], L"kunkun.jpg", chess_size, chess_size);
-	loadimage(&skin_mask[2], L"xiongmao1.jpg", chess_size, chess_size);
-	loadimage(&skin[2], L"xiongmao.jpg", chess_size, chess_size);
-	loadimage(&skin_mask[3], L"leishen1.jpg", chess_size, chess_size);
-	loadimage(&skin[3], L"leishen.jpg", chess_size, chess_size);
-	loadimage(&skin_mask[4], L"zongzi1.jpg", chess_size, chess_size);
-	loadimage(&skin[4], L"zongzi.jpg", chess_size, chess_size);
-	loadimage(&skin_mask[5], L"angel1.jpg", chess_size, chess_size);
-	loadimage(&skin[5], L"angel.jpg", chess_size, chess_size);
-	loadimage(&skin_mask_icon[0], L"jian.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[0], L"jianjian.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_mask_icon[1], L"kun.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[1], L"kunkun.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_mask_icon[2], L"xiongmao1.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[2], L"xiongmao.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_mask_icon[3], L"leishen1.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[3], L"leishen.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_mask_icon[4], L"zongzi1.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[4], L"zongzi.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_mask_icon[5], L"angel1.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&skin_icon[5], L"angel.jpg", chess_icon_size, chess_icon_size);
-	loadimage(&white_win, L"whitewin.jpg");
-	loadimage(&black_win, L"blackwin.jpg");
-	loadimage(&record_success, L"record_success.jpg");
-	loadimage(&numbers_s[0], L"0.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[1], L"1.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[2], L"2.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[3], L"3.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[4], L"4.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[5], L"5.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[6], L"6.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[7], L"7.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[8], L"8.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_s[9], L"9.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_b[0], L"0.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[1], L"1.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[2], L"2.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[3], L"3.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[4], L"4.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[5], L"5.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[6], L"6.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[7], L"7.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[8], L"8.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[9], L"9.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_b[9], L"9.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[0], L"00.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[1], L"11.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[2], L"22.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[3], L"33.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[4], L"44.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[5], L"55.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[6], L"66.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[7], L"77.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[8], L"88.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_b[9], L"99.jpg", number_big_weight, number_big_height);
-	loadimage(&numbers_mask_s[0], L"00.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[1], L"11.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[2], L"22.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[3], L"33.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[4], L"44.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[5], L"55.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[6], L"66.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[7], L"77.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[8], L"88.jpg", number_small_weight, number_small_height);
-	loadimage(&numbers_mask_s[9], L"99.jpg", number_small_weight, number_small_height);
+	loadimage(&pic_chess_board, L"img\\qipan.jpg", 1110, 774);
+	loadimage(&menu, L"img\\caidan.jpg");
+	loadimage(&pic_skin_change, L"img\\pifuxuanze.jpg");
+	loadimage(&skin_mask[0], L"img\\jian.jpg", chess_size, chess_size);
+	loadimage(&skin[0], L"img\\jianjian.jpg", chess_size, chess_size);
+	loadimage(&skin_mask[1], L"img\\kun.jpg", chess_size, chess_size);
+	loadimage(&skin[1], L"img\\kunkun.jpg", chess_size, chess_size);
+	loadimage(&skin_mask[2], L"img\\xiongmao1.jpg", chess_size, chess_size);
+	loadimage(&skin[2], L"img\\xiongmao.jpg", chess_size, chess_size);
+	loadimage(&skin_mask[3], L"img\\leishen1.jpg", chess_size, chess_size);
+	loadimage(&skin[3], L"img\\leishen.jpg", chess_size, chess_size);
+	loadimage(&skin_mask[4], L"img\\zongzi1.jpg", chess_size, chess_size);
+	loadimage(&skin[4], L"img\\zongzi.jpg", chess_size, chess_size);
+	loadimage(&skin_mask[5], L"img\\angel1.jpg", chess_size, chess_size);
+	loadimage(&skin[5], L"img\\angel.jpg", chess_size, chess_size);
+	loadimage(&skin_mask_icon[0], L"img\\jian.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[0], L"img\\jianjian.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_mask_icon[1], L"img\\kun.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[1], L"img\\kunkun.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_mask_icon[2], L"img\\xiongmao1.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[2], L"img\\xiongmao.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_mask_icon[3], L"img\\leishen1.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[3], L"img\\leishen.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_mask_icon[4], L"img\\zongzi1.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[4], L"img\\zongzi.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_mask_icon[5], L"img\\angel1.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&skin_icon[5], L"img\\angel.jpg", chess_icon_size, chess_icon_size);
+	loadimage(&white_win, L"img\\whitewin.jpg");
+	loadimage(&black_win, L"img\\blackwin.jpg");
+	loadimage(&record_success, L"img\\record_success.jpg");
+	loadimage(&numbers_s[0], L"img\\0.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[1], L"img\\1.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[2], L"img\\2.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[3], L"img\\3.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[4], L"img\\4.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[5], L"img\\5.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[6], L"img\\6.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[7], L"img\\7.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[8], L"img\\8.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_s[9], L"img\\9.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_b[0], L"img\\0.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[1], L"img\\1.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[2], L"img\\2.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[3], L"img\\3.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[4], L"img\\4.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[5], L"img\\5.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[6], L"img\\6.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[7], L"img\\7.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[8], L"img\\8.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[9], L"img\\9.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_b[9], L"img\\9.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[0], L"img\\00.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[1], L"img\\11.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[2], L"img\\22.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[3], L"img\\33.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[4], L"img\\44.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[5], L"img\\55.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[6], L"img\\66.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[7], L"img\\77.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[8], L"img\\88.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_b[9], L"img\\99.jpg", number_big_weight, number_big_height);
+	loadimage(&numbers_mask_s[0], L"img\\00.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[1], L"img\\11.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[2], L"img\\22.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[3], L"img\\33.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[4], L"img\\44.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[5], L"img\\55.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[6], L"img\\66.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[7], L"img\\77.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[8], L"img\\88.jpg", number_small_weight, number_small_height);
+	loadimage(&numbers_mask_s[9], L"img\\99.jpg", number_small_weight, number_small_height);
+}
+
+void game_init(){
+    //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
+	initgraph(1110, 774);    
+    memset(chess_board,0,sizeof(chess_board));
+    game_record.clear();
+    play_side_now=BLACK_SIDE;
+    chose_rival();
+	white_using_skin_num = 2;
+	black_using_skin_num = 1;
+	white_money=0;
+	black_money = 0;
+	rounds = 0;
+	draw_chess_board(chess_board);
 }
 void chose_rival(){
     //进入菜单选择对手
@@ -292,20 +312,6 @@ void chose_rival(){
             }
         }
     }
-}
-void game_init(){
-    //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
-	initgraph(1110, 774);    
-    memset(chess_board,0,sizeof(chess_board));
-    game_record.clear();
-    play_side_now=BLACK_SIDE;
-    chose_rival();
-	white_using_skin_num = 0;
-	black_using_skin_num = 1;
-	white_money=0;
-	black_money = 0;
-	rounds = 0;
-	draw_chess_board(chess_board);
 }
 bool in_range_vs_human(MOUSEMSG m_mouse){
     //判断是否选择人人对战
