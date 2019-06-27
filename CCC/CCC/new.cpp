@@ -122,6 +122,16 @@ int Min_AlphaBeta(int Dep, int alpha, int beta); // 轮到对手下子时，对�
 #define WHITE_GIVE_UP_DOWN 598
 #define WHITE_GIVE_UP_LEFT 969
 #define WHITE_GIVE_UP_RIGHT 1062 
+//打赏按钮
+#define ZAN_UP 637
+#define ZAN_DOWN 685
+#define ZAN_LEFT 46
+#define ZAN_RIGHT 144
+//关于按钮
+#define ABOUT_UP 637
+#define ABOUT_DOWN 685
+#define ABOUT_LEFT 969
+#define ABOUT_RIGHT 1062 
 //重来按钮
 #define RESET_UP 36
 #define RESET_DOWN 73
@@ -195,6 +205,7 @@ int number_big_height = 65;
 int rival_now;
 int rounds;
 int in_replay = 0;
+IMAGE pic_about, pic_zan;
 IMAGE pic_chess_board, pic_skin_change, skin[6], skin_mask[6], skin_icon[6], skin_mask_icon[6];
 IMAGE menu,white_win, black_win, record_success, numbers_s[10], numbers_mask_s[10], numbers_b[10], numbers_mask_b[10];
 vector <struct point> game_record;
@@ -206,6 +217,8 @@ int main() {
 	play();
 }
 void load_image() {
+	loadimage(&pic_about, L"img\\about.jpg");
+	loadimage(&pic_zan, L"img\\dashang.jpg");
 	loadimage(&pic_chess_board, L"img\\qipan.jpg", 1110, 774);
 	loadimage(&menu, L"img\\caidan.jpg");
 	loadimage(&pic_skin_change, L"img\\pifuxuanze.jpg");
@@ -337,6 +350,20 @@ bool in_range_black_give_up(MOUSEMSG m_mouse){
 bool in_range_white_give_up(MOUSEMSG m_mouse){
     //判断是否在白棋认输范围之内
     if(m_mouse.x>=WHITE_GIVE_UP_LEFT && m_mouse.x<=WHITE_GIVE_UP_RIGHT && m_mouse.y>=WHITE_GIVE_UP_UP && m_mouse.y<=WHITE_GIVE_UP_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_about(MOUSEMSG m_mouse){
+    //判断是否在关于范围之内
+    if(m_mouse.x>=ABOUT_LEFT && m_mouse.x<=ABOUT_RIGHT && m_mouse.y>=ABOUT_UP && m_mouse.y<=ABOUT_DOWN){
+        return true;
+    }
+    else return false;
+}
+bool in_range_zan(MOUSEMSG m_mouse){
+    //判断是否在打赏认输范围之内
+    if(m_mouse.x>=ZAN_LEFT && m_mouse.x<=ZAN_RIGHT && m_mouse.y>=ZAN_UP && m_mouse.y<=ZAN_DOWN){
         return true;
     }
     else return false;
@@ -1031,7 +1058,16 @@ void check_win() {
 		win(BLACK_SIDE);
 	}
 }
-
+void zan(){
+	putimage(450, 300, &pic_zan);
+	wait_mouse_click();
+	draw_chess_board(chess_board);
+}
+void about(){
+	putimage(pic_x, pic_y, &pic_about);
+	wait_mouse_click();
+	draw_chess_board(chess_board);
+}
 void play() {
 	while (1) {
 		m_mouse = GetMouseMsg();
@@ -1068,6 +1104,12 @@ void play() {
 			}
 			else if(in_range_black_give_up(m_mouse)){
 				win(WHITE_SIDE);
+			}
+			else if(in_range_zan(m_mouse)){
+				zan();
+			}
+			else if(in_range_about(m_mouse)){
+				about();
 			}
 			//这里以后加更多按钮的功能
 		}
