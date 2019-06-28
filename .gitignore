@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+CCC/.vs/
 
 # Build results
 
@@ -140,6 +141,9 @@ App_Data/*.ldf
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
+*.opendb
+*.db
+
 
 # Folder config file
 Desktop.ini

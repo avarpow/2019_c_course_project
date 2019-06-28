@@ -21,6 +21,12 @@
   <ItemGroup>
     <ClCompile Include="new.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CCC.rc" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A986F92E-960B-4047-9BDD-89F0B4FA39EB}</ProjectGuid>
