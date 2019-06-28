@@ -167,6 +167,11 @@ int Min_AlphaBeta(int Dep, int alpha, int beta); // 轮到对手下子时，对�
 #define CHANGE_SKIN_6_DOWN (pic_y+182+chess_icon_size)
 #define CHANGE_SKIN_6_LEFT (pic_x+343)
 #define CHANGE_SKIN_6_RIGHT (pic_x+343+chess_icon_size)
+//换皮肤关闭按钮
+#define CLOSE_UP (pic_y+7)
+#define CLOSE_DOWN (pic_y+42)
+#define CLOSE_LEFT (pic_x+372)
+#define CLOSE_RIGHT (pic_x+441)
 const int BLACK_CHESS = 1;
 const int WHITE_CHESS = -1;
 const int EMPTY = 0;
@@ -188,6 +193,7 @@ struct point {
 int Map[15][15], win_s[2][2005];
 int BLACK_CHESS_table[15][15][2005], OTtable[15][15][2005];
 int Start, Count;
+
 int chess_board[15][15] = { 0 };
 int play_side_now;//描述当前是白方还是黑方下棋
 int white_using_skin_num;
@@ -292,40 +298,6 @@ void load_image() {
 	loadimage(&numbers_mask_s[9], L"img\\99.jpg", number_small_weight, number_small_height);
 }
 
-void game_init(){
-    //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
-	initgraph(1110, 774);    
-    memset(chess_board,0,sizeof(chess_board));
-    game_record.clear();
-    play_side_now=BLACK_SIDE;
-    chose_rival();
-	white_using_skin_num = 2;
-	black_using_skin_num = 1;
-	white_money=0;
-	black_money = 0;
-	rounds = 0;
-	draw_chess_board(chess_board);
-}
-void chose_rival(){
-    //进入菜单选择对手
-	int flag = 1, k = 0;
-	putimage(0,0,&menu);
-    while(flag){
-        m_mouse = GetMouseMsg();
-        switch (m_mouse.uMsg) {	
-            case WM_LBUTTONDOWN:{
-                if(in_range_vs_human(m_mouse)){
-                    rival_now=HUMAN;
-                    flag=0;
-                }
-                else if(in_range_vs_ai(m_mouse)){
-                    rival_now=AI;
-                    flag=0;
-                }
-            }
-        }
-    }
-}
 bool in_range_vs_human(MOUSEMSG m_mouse){
     //判断是否选择人人对战
     if(m_mouse.x>=VS_HUMAN_LEFT && m_mouse.x<=VS_HUMAN_RIGHT && m_mouse.y>=VS_HUMAN_UP && m_mouse.y<=VS_HUMAN_DOWN){
@@ -396,38 +368,49 @@ bool in_range_change_skin_1(MOUSEMSG m_mouse) {
 		return true;
 	}
 	else return false;
-}bool in_range_change_skin_2(MOUSEMSG m_mouse) {
+}
+bool in_range_change_skin_2(MOUSEMSG m_mouse) {
 	//判断是否在皮肤2范围之内
 	if (m_mouse.x >= CHANGE_SKIN_2_LEFT && m_mouse.x <= CHANGE_SKIN_2_RIGHT && m_mouse.y >= CHANGE_SKIN_2_UP && m_mouse.y <= CHANGE_SKIN_2_DOWN) {
 		return true;
 	}
 	else return false;
-}bool in_range_change_skin_3(MOUSEMSG m_mouse) {
+}
+bool in_range_change_skin_3(MOUSEMSG m_mouse) {
 	//判断是否在皮肤3范围之内
 	if (m_mouse.x >= CHANGE_SKIN_3_LEFT && m_mouse.x <= CHANGE_SKIN_3_RIGHT && m_mouse.y >= CHANGE_SKIN_3_UP && m_mouse.y <= CHANGE_SKIN_3_DOWN) {
 		return true;
 	}
 	else return false;
-}bool in_range_change_skin_4(MOUSEMSG m_mouse) {
+}
+bool in_range_change_skin_4(MOUSEMSG m_mouse) {
 	//判断是否在皮肤4范围之内
 	if (m_mouse.x >= CHANGE_SKIN_4_LEFT && m_mouse.x <= CHANGE_SKIN_4_RIGHT && m_mouse.y >= CHANGE_SKIN_4_UP && m_mouse.y <= CHANGE_SKIN_4_DOWN) {
 		return true;
 	}
 	else return false;
-}bool in_range_change_skin_5(MOUSEMSG m_mouse) {
+}
+bool in_range_change_skin_5(MOUSEMSG m_mouse) {
 	//判断是否在皮肤5范围之内
 	if (m_mouse.x >= CHANGE_SKIN_5_LEFT && m_mouse.x <= CHANGE_SKIN_5_RIGHT && m_mouse.y >= CHANGE_SKIN_5_UP && m_mouse.y <= CHANGE_SKIN_5_DOWN) {
 		return true;
 	}
 	else return false;
-}bool in_range_change_skin_6(MOUSEMSG m_mouse) {
+}
+bool in_range_change_skin_6(MOUSEMSG m_mouse) {
 	//判断是否在皮肤6范围之内
 	if (m_mouse.x >= CHANGE_SKIN_6_LEFT && m_mouse.x <= CHANGE_SKIN_6_RIGHT && m_mouse.y >= CHANGE_SKIN_6_UP && m_mouse.y <= CHANGE_SKIN_6_DOWN) {
 		return true;
 	}
 	else return false;
 }
-
+bool in_range_close(MOUSEMSG m_mouse) {
+	//判断是否在皮肤6范围之内
+	if (m_mouse.x >= CLOSE_LEFT && m_mouse.x <= CLOSE_RIGHT && m_mouse.y >= CLOSE_UP && m_mouse.y <= CLOSE_DOWN) {
+		return true;
+	}
+	else return false;
+}
 bool in_range_set_chess(MOUSEMSG m_mouse) {
 	//判断是否在下棋范围之内
 	if (m_mouse.x >= CHESS_LEFT && m_mouse.x <= CHESS_RIGHT && m_mouse.y >= CHESS_UP && m_mouse.y <= CHESS_DOWN) {
@@ -469,6 +452,40 @@ bool in_range_record(MOUSEMSG m_mouse) {
 	}
 	else return false;
 }
+void game_init(){
+    //棋盘置零，棋局记录清空，双方使用0号皮肤，双方金钱清零
+	initgraph(1110, 774);    
+    memset(chess_board,0,sizeof(chess_board));
+    game_record.clear();
+    play_side_now=BLACK_SIDE;
+    chose_rival();
+	white_using_skin_num = 5;
+	black_using_skin_num = 0;
+	white_money=0;
+	black_money = 0;
+	rounds = 0;
+	draw_chess_board(chess_board);
+}
+void chose_rival(){
+    //进入菜单选择对手
+	int flag = 1, k = 0;
+	putimage(0,0,&menu);
+    while(flag){
+        m_mouse = GetMouseMsg();
+        switch (m_mouse.uMsg) {	
+            case WM_LBUTTONDOWN:{
+                if(in_range_vs_human(m_mouse)){
+                    rival_now=HUMAN;
+                    flag=0;
+                }
+                else if(in_range_vs_ai(m_mouse)){
+                    rival_now=AI;
+                    flag=0;
+                }
+            }
+        }
+    }
+}
 void set_chess(MOUSEMSG m_mouse, int& play_side_now) {
 	//根据鼠标位置和现在是哪一方在下棋来落子
 	point temp;
@@ -503,6 +520,18 @@ void withdraw() {
 		game_record.pop_back();
 		chess_board[last_point.x][last_point.y] = 0;
 		rounds--;
+		switch (play_side_now) {
+			case WHITE_SIDE:
+			{
+				play_side_now = BLACK_SIDE;
+				break;
+			}
+			case BLACK_SIDE:
+			{
+				play_side_now = WHITE_SIDE;
+				break;
+			}
+		}
 		draw_chess_board(chess_board);
 	}
 }
@@ -738,33 +767,36 @@ int chose_skin() {
 	int flag = 1, k = 0;
 	while (flag) {
 		m_mouse = GetMouseMsg();
-		switch (m_mouse.uMsg) {
-		case WM_LBUTTONDOWN: {
-			if (in_range_change_skin_1(m_mouse)) {
-				k = 0;
-				flag = 0;
+			switch (m_mouse.uMsg) {
+			case WM_LBUTTONDOWN: {
+				if (in_range_change_skin_1(m_mouse)) {
+					k = 0;
+					flag = 0;
+				}
+				else if (in_range_change_skin_2(m_mouse)) {
+					k = 1;
+					flag = 0;
+				}
+				else if (in_range_change_skin_3(m_mouse)) {
+					k = 2;
+					flag = 0;
+				}
+				else if (in_range_change_skin_4(m_mouse)) {
+					k = 3;
+					flag = 0;
+				}
+				else if (in_range_change_skin_5(m_mouse)) {
+					k = 4;
+					flag = 0;
+				}
+				else if (in_range_change_skin_6(m_mouse)) {
+					k = 5;
+					flag = 0;
+				}
+				else if(in_range_close(m_mouse)){
+					flag = 0;
+				}
 			}
-			else if (in_range_change_skin_2(m_mouse)) {
-				k = 1;
-				flag = 0;
-			}
-			else if (in_range_change_skin_3(m_mouse)) {
-				k = 2;
-				flag = 0;
-			}
-			else if (in_range_change_skin_4(m_mouse)) {
-				k = 3;
-				flag = 0;
-			}
-			else if (in_range_change_skin_5(m_mouse)) {
-				k = 4;
-				flag = 0;
-			}
-			else if (in_range_change_skin_6(m_mouse)) {
-				k = 5;
-				flag = 0;
-			}
-		}
 		}
 	}
 	return k;
@@ -775,6 +807,7 @@ void white_skin_change() {
 	if (new_skin != black_using_skin_num) {
 		white_using_skin_num = new_skin;
 	}
+	draw_chess_board(chess_board);
 }
 void black_skin_change() {
 	show_skin();
@@ -782,6 +815,7 @@ void black_skin_change() {
 	if (new_skin != white_using_skin_num) {
 		black_using_skin_num = new_skin;
 	}
+	draw_chess_board(chess_board);
 }
 int Around(int x, int y) // 空子只算旁边有子的
 {
