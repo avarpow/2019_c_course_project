@@ -1,0 +1,45 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{tikz}
+\title{五子棋}
+\author{靓仔语塞。jpg\\
+林天皓 \ 龙行健 \ 陈逸铭 \ 廖洋 \ 高远 \ 艾刚正}
+\date{\today}
+\begin{document}
+\maketitle
+\newpage
+\section{简介}
+待添加
+\section{流程图}
+
+\begin{figure}
+    \scriptsize
+    \tikzstyle{format}=[rectangle,draw,thin,fill=white]
+    \tikzstyle{test}=[diamond,aspect=2,draw,thin]
+    \tikzstyle{point}=[coordinate,on grid,]
+    \begin{tikzpicture}[node distance=8mm,
+            auto,
+            thin,
+            ]
+        \node[format] (n0){A};
+        \node[format,below of=n0] (n1){B};
+        \node[format,below of=n1] (n2){C};
+        \node[format,below of=n2] (n3){D};
+
+        \node[format,below of=n3] (n4){E};
+        \node[format,below of=n4] (n5){F};
+        \node[format,right of=n5] (n6){G};
+        
+        \draw[->] (n0.south) -- (n1);
+        \draw[->] (n1.south) -- (n2);
+        \draw[->] (n2.south) -- (n3);
+        \draw[->] (n3.south) -- (n4);
+        \draw[->] (n4.south) -- (n5);
+        
+    \end{tikzpicture}
+\end{figure}
+\section{程序函数介绍}
+待添加
+\newpage
+
+
+\end{document}
