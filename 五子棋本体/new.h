@@ -190,4 +190,9 @@ struct point {
     int x = 0;
     int y = 0;
 };
+struct ListNode {
+    int id;
+    int score;
+    struct ListNode* next;
+};
 #endif // !_NEW_
