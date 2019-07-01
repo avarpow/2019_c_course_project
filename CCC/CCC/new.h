@@ -38,8 +38,6 @@ void withdraw();
 void wait_mouse_click();
 void draw_chess_board(int chess_board[][15]);
 int one_side_win(int which_side);
-int is_five(int row, int column, int which_side);
-bool is_one_side_win(int which_side);
 void win(int which_side);
 void save_game_record();
 void show_skin();

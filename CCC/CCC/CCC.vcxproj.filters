@@ -18,6 +18,9 @@
     <ClCompile Include="new.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="win.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="new.h">
@@ -25,6 +28,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="win.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

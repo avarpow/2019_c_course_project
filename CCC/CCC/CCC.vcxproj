@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="new.cpp" />
+    <ClCompile Include="win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="new.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="win.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CCC.rc" />
